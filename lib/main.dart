@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_news/home_page.dart';
+import 'package:flutter_news/service/service_base.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -56,16 +59,19 @@ class _FlutterNewsState extends State<FlutterNews>
   @override
   void initState() {
     super.initState();
+    getData('top').then((value) => print(value.error_code));
     _tabController = TabController(
       length: _tabs.length,
       vsync: this,
     );
   }
+
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,14 +86,30 @@ class _FlutterNewsState extends State<FlutterNews>
       body: TabBarView(
         controller: _tabController,
         children: _tabs
-            .map((Tab tab) => Container(
-                  child: Center(
-                    child: Text(tab.text),
-                  ),
-                ))
+            .map((Tab tab) =>
+            Container(
+              child: FutureBuilder(
+                  future: getData('top'),
+                  builder: (context, response) {
+                    if (response.hasData) {
+                      var data = json.decode(response.data);
+                      List<Map> newsList =
+                      (data['result']['data'] as List).cast();
+                      print(data);
+                      print(newsList[0]['title']);
+                      return ListView(children: newsList.map((e) =>
+                          ListTile(title: Text(e['title']),)).toList(),);
+                      return Center(child: Text(newsList[0]['title']));
+                    } else {
+                      return Center(
+                        child: Text('加载中...'),
+                      );
+                    }
+                  }),
+            ))
             .toList(),
       ),
-     /* floatingActionButton: FloatingActionButton(
+      /* floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.of(context)
