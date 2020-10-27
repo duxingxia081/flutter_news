@@ -14,36 +14,89 @@ class FlutterNews extends StatefulWidget {
   _FlutterNewsState createState() => _FlutterNewsState();
 }
 
-class _FlutterNewsState extends State<FlutterNews> {
+class _FlutterNewsState extends State<FlutterNews>
+    with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
+  var _tabController;
+
+  var _tabs = <Tab>[
+    Tab(
+      text: "头条",
+    ),
+    Tab(
+      text: "社会",
+    ),
+    Tab(
+      text: "国内",
+    ),
+    Tab(
+      text: "国际",
+    ),
+    Tab(
+      text: "娱乐",
+    ),
+    Tab(
+      text: "体育",
+    ),
+    Tab(
+      text: "军事",
+    ),
+    Tab(
+      text: "科技",
+    ),
+    Tab(
+      text: "财经",
+    ),
+    Tab(
+      text: "时尚",
+    )
+  ];
   List children = [HomePage(), HomePage()];
 
   @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: _tabs.length,
+      vsync: this,
+    );
+  }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('新闻资讯')),
-      body: children[_currentIndex],
-      floatingActionButton: FloatingActionButton(
+      appBar: AppBar(
+          title: Text('新闻资讯'),
+          bottom: TabBar(
+            tabs: _tabs,
+            controller: _tabController,
+            isScrollable: true,
+            indicatorColor: Color(0xffff0000),
+          )),
+      body: TabBarView(
+        controller: _tabController,
+        children: _tabs
+            .map((Tab tab) => Container(
+                  child: Center(
+                    child: Text(tab.text),
+                  ),
+                ))
+            .toList(),
+      ),
+     /* floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => HomePage()));
         },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.water_damage), label: '首页'),
-          BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: '我的')
-        ],
-      ),
-      drawer: Drawer(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,*/
+
+      /*drawer: Drawer(
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
@@ -73,7 +126,7 @@ class _FlutterNewsState extends State<FlutterNews> {
             )
           ],
         ),
-      ),
+      ),*/
     );
   }
 }
