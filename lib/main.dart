@@ -21,47 +21,24 @@ class _FlutterNewsState extends State<FlutterNews>
     with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
   var _tabController;
-
-  var _tabs = <Tab>[
-    Tab(
-      text: "头条",
-    ),
-    Tab(
-      text: "社会",
-    ),
-    Tab(
-      text: "国内",
-    ),
-    Tab(
-      text: "国际",
-    ),
-    Tab(
-      text: "娱乐",
-    ),
-    Tab(
-      text: "体育",
-    ),
-    Tab(
-      text: "军事",
-    ),
-    Tab(
-      text: "科技",
-    ),
-    Tab(
-      text: "财经",
-    ),
-    Tab(
-      text: "时尚",
-    )
+  var _newTab = <NewsTab>[
+    NewsTab("头条", "top"),
+    NewsTab("社会", "top"),
+    NewsTab("国内", "top"),
+    NewsTab("国际", "top"),
+    NewsTab("娱乐", "top"),
+    NewsTab("体育", "top"),
+    NewsTab("军事", "top"),
+    NewsTab("科技", "top"),
+    NewsTab("财经", "top"),
+    NewsTab("时尚", "top")
   ];
-  List children = [HomePage(), HomePage()];
 
   @override
   void initState() {
     super.initState();
-    getData('top').then((value) => print(value.error_code));
     _tabController = TabController(
-      length: _tabs.length,
+      length: _newTab.length,
       vsync: this,
     );
   }
@@ -78,35 +55,15 @@ class _FlutterNewsState extends State<FlutterNews>
       appBar: AppBar(
           title: Text('新闻资讯'),
           bottom: TabBar(
-            tabs: _tabs,
+            tabs: _newTab.map((newTab) => Tab(text: newTab.text)).toList(),
             controller: _tabController,
             isScrollable: true,
             indicatorColor: Color(0xffff0000),
           )),
       body: TabBarView(
         controller: _tabController,
-        children: _tabs
-            .map((Tab tab) =>
-            Container(
-              child: FutureBuilder(
-                  future: getData('top'),
-                  builder: (context, response) {
-                    if (response.hasData) {
-                      var data = json.decode(response.data);
-                      List<Map> newsList =
-                      (data['result']['data'] as List).cast();
-                      print(data);
-                      print(newsList[0]['title']);
-                      return ListView(children: newsList.map((e) =>
-                          ListTile(title: Text(e['title']),)).toList(),);
-                      return Center(child: Text(newsList[0]['title']));
-                    } else {
-                      return Center(
-                        child: Text('加载中...'),
-                      );
-                    }
-                  }),
-            ))
+        children: _newTab
+            .map((NewsTab newTab) => Container(child: HomePage(newTab.label)))
             .toList(),
       ),
       /* floatingActionButton: FloatingActionButton(
@@ -151,4 +108,11 @@ class _FlutterNewsState extends State<FlutterNews>
       ),*/
     );
   }
+}
+
+class NewsTab {
+  String text;
+  String label;
+
+  NewsTab(this.text, this.label);
 }
