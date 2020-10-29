@@ -22,16 +22,19 @@ class _FlutterNewsState extends State<FlutterNews>
   int _currentIndex = 0;
   var _tabController;
   var _newTab = <NewsTab>[
-    NewsTab("头条", "top"),
-    NewsTab("社会", "top"),
-    NewsTab("国内", "top"),
-    NewsTab("国际", "top"),
-    NewsTab("娱乐", "top"),
-    NewsTab("体育", "top"),
-    NewsTab("军事", "top"),
-    NewsTab("科技", "top"),
-    NewsTab("财经", "top"),
-    NewsTab("时尚", "top")
+    NewsTab("新闻", "BBM54PGAwangning"),
+    NewsTab("娱乐", "BA10TA81wangning"),
+    NewsTab("体育", "BA8E6OEOwangning"),
+    NewsTab("财经", "BA8EE5GMwangning"),
+    NewsTab("军事", "BAI67OGGwangning"),
+    NewsTab("科技", "BA8D4A3Rwangning"),
+    NewsTab("手机", "BAI6I0O5wangning"),
+    NewsTab("数码", "BAI6JOD9wangning"),
+    NewsTab("时尚", "BA8F6ICNwangning"),
+    NewsTab("游戏", "BAI6RHDKwangning"),
+    NewsTab("教育", "BA8FF5PRwangning"),
+    NewsTab("健康", "BDC4QSV3wangning"),
+    NewsTab("旅游", "BEO4GINLwangning")
   ];
 
   @override

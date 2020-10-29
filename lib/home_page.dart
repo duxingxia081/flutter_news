@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_news/news_detail.dart';
 import 'package:flutter_news/service/service_base.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,7 +17,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
-    print(widget.tab);
   }
 
   @override
@@ -25,15 +25,12 @@ class _HomePageState extends State<HomePage> {
         future: getData(widget.tab),
         builder: (context, response) {
           if (response.hasData) {
-            var data = json.decode(response.data);
-            if (null!=data['reason']) {
-              return Center(
-                child: Text(data['reason']),
-              );
-            }
-            List<Map> newsList = (data['result']['data'] as List).cast();
+            String dataStr = response.data.toString();
+            dataStr = dataStr.substring(9, dataStr.length - 1);
+            var data = json.decode(dataStr);
+            List<Map> newsList = (data[widget.tab] as List).cast();
             return ListView(
-              children: newsList.map((e) => news(e)).toList(),
+              children: newsList.map((e) => news(context,e)).toList(),
             );
           } else {
             return Center(
@@ -44,21 +41,34 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-Widget news(data) {
-  return Container(
-      margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(data['title']),
-            flex: 2,
-          ),
-          Expanded(
-            child: Container(
-              child: Image.network(data['thumbnail_pic_s']),
-            ),
-            flex: 1,
-          )
-        ],
-      ));
+Widget news(context, data) {
+  return InkWell(
+      onTap: () {
+        if (null == data['url'] || "" == data['url']) {
+          return;
+        } else {
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => NewsDetail(data['url'])));
+        }
+      },
+      child: Container(
+          margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
+          constraints: BoxConstraints(maxHeight: 80.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: ListTile(
+                  title: Text(data['title']),
+                  subtitle: Text(data['ptime']),
+                ),
+                flex: 2,
+              ),
+              Expanded(
+                child: Container(
+                  child: Image.network(data['imgsrc']),
+                ),
+                flex: 1,
+              )
+            ],
+          )));
 }
